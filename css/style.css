@@ -12,7 +12,7 @@ body {
 
 #container {
   width: 320px;
-  height: 1000px;
+  height: 1070px;
   background: #FFFFFF;
   position: relative;
   margin: 0 auto;
@@ -232,12 +232,6 @@ body {
   background: url("../i/back-icon.png");
   background-size: 100%;
   border: 0;
-  /* -webkit-transform: scale(0.1);
-          transform: scale(0.1);
-  -webkit-transition: -webkit-transform 0.15s;
-  transition: -webkit-transform 0.15s;
-  transition: transform 0.15s;
-  transition: transform 0.15s, -webkit-transform 0.15s; */
   z-index: 1;
   cursor: pointer;
 }
@@ -295,6 +289,98 @@ body {
   transition: transform 0.3s 0.06s;
   transition: transform 0.3s 0.06s, -webkit-transform 0.3s 0.06s;
 }
+
+#container .details-view li:nth-child(6) {
+  -webkit-transform: translate3d(0, 50px, 0);
+          transform: translate3d(0, 50px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.08s;
+  transition: -webkit-transform 0.3s 0.08s;
+  transition: transform 0.3s 0.08s;
+  transition: transform 0.3s 0.08s, -webkit-transform 0.3s 0.08s;
+}
+
+#container .details-view li:nth-child(7) {
+  -webkit-transform: translate3d(0, 55px, 0);
+          transform: translate3d(0, 55px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.1s;
+  transition: -webkit-transform 0.3s 0.1s;
+  transition: transform 0.3s 0.1s;
+  transition: transform 0.3s 0.1s, -webkit-transform 0.3s 0.1s;
+}
+
+#container .details-view li:nth-child(8) {
+  -webkit-transform: translate3d(0, 60px, 0);
+          transform: translate3d(0, 60px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.12s;
+  transition: -webkit-transform 0.3s 0.12s;
+  transition: transform 0.3s 0.12s;
+  transition: transform 0.3s 0.12s, -webkit-transform 0.3s 0.12s;
+}
+
+#container .details-view li:nth-child(9) {
+  -webkit-transform: translate3d(0, 65px, 0);
+          transform: translate3d(0, 65px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.14s;
+  transition: -webkit-transform 0.3s 0.14s;
+  transition: transform 0.3s 0.14s;
+  transition: transform 0.3s 0.14s, -webkit-transform 0.3s 0.14s;
+}
+
+#container .details-view li:nth-child(10) {
+  -webkit-transform: translate3d(0, 70px, 0);
+          transform: translate3d(0, 70px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.16s;
+  transition: -webkit-transform 0.3s 0.16s;
+  transition: transform 0.3s 0.16s;
+  transition: transform 0.3s 0.16s, -webkit-transform 0.3s 0.16s;
+}
+
+#container .details-view li:nth-child(11) {
+  -webkit-transform: translate3d(0, 75px, 0);
+          transform: translate3d(0, 75px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.18s;
+  transition: -webkit-transform 0.3s 0.18s;
+  transition: transform 0.3s 0.18s;
+  transition: transform 0.3s 0.18s, -webkit-transform 0.3s 0.18s;
+}
+
+#container .details-view li:nth-child(11) {
+  -webkit-transform: translate3d(0, 80px, 0);
+          transform: translate3d(0, 80px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.2s;
+  transition: -webkit-transform 0.3s 0.2s;
+  transition: transform 0.3s 0.2s;
+  transition: transform 0.3s 0.2s, -webkit-transform 0.3s 0.2s;
+}
+
+#container .details-view li:nth-child(11) {
+  -webkit-transform: translate3d(0, 85px, 0);
+          transform: translate3d(0, 85px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.22s;
+  transition: -webkit-transform 0.3s 0.22s;
+  transition: transform 0.3s 0.22s;
+  transition: transform 0.3s 0.22s, -webkit-transform 0.3s 0.22s;
+}
+
+#container .details-view li:nth-child(12) {
+  -webkit-transform: translate3d(0, 90px, 0);
+          transform: translate3d(0, 90px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.24s;
+  transition: -webkit-transform 0.3s 0.24s;
+  transition: transform 0.3s 0.24s;
+  transition: transform 0.3s 0.24s, -webkit-transform 0.3s 0.24s;
+}
+
+#container .details-view li:nth-child(13) {
+  -webkit-transform: translate3d(0, 95px, 0);
+          transform: translate3d(0, 95px, 0);
+  -webkit-transition: -webkit-transform 0.3s 0.26s;
+  transition: -webkit-transform 0.3s 0.26s;
+  transition: transform 0.3s 0.26s;
+  transition: transform 0.3s 0.26s, -webkit-transform 0.3s 0.26s;
+}
+
+
 
 li.people-title {
   margin-left: 8px;
