@@ -380,8 +380,6 @@ body {
   transition: transform 0.3s 0.26s, -webkit-transform 0.3s 0.26s;
 }
 
-
-
 li.people-title {
   margin-left: 8px;
   font-weight: bold;
@@ -389,9 +387,8 @@ li.people-title {
 }
 
 li.people-title-name {
-  display: inline-flex;
-  justify-content: center;
-  padding: 10px 50px;
+  width: 100%;
+  margin-left: 0;
 text-align: center;
 background-color: white;
 }

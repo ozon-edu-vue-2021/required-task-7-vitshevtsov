@@ -6,6 +6,8 @@ const templateDetailsItem = document.querySelector("#details-item");
 const details = document.querySelector(".details-view");
 const detailsList = document.querySelector(".details-list");
 const backButton = document.querySelector(".back");
+const fragment = document.createDocumentFragment();
+
 let contactsData;
 
 /**
@@ -29,7 +31,6 @@ const showContacts = function (contacts) {
   if (!contacts.length) {
     throw Error(`Contacts list is empty.`);
   }
-  const fragment = document.createDocumentFragment();
   let idCounter = 1;
   contacts.forEach((el) => {
     const id = el.id;
@@ -48,15 +49,16 @@ const showContacts = function (contacts) {
 
 /**
  * Функция заполняет ul разметкой,
- * затем встраивает в разметку друзей, недрузей
- * и популярных людей
+ * создает массивы друзей, недрузей и популярных людей,
+ * и передает их в функции рендера
  */
 const renderDetails = function (id) {
   const index = id - 1; // все id исходного массива = индекс + 1
   const name = contactsData[index].name;
   const friends = contactsData[index].friends;
-  const fragment = document.createDocumentFragment();
+  const [nonFriends, sortedByPopularity] = getNonFriendsAndPopular(id, friends);
 
+  // используется innerHTML, т.к. разметка очищается при нажатии кнопки назад (возврате к контактам)
   detailsList.innerHTML = `
             <li class="people-title people-title-name">${name}</li>
             <li class="people-title friends">Друзья</li>
@@ -64,25 +66,22 @@ const renderDetails = function (id) {
             <li class="people-title popular">Популярные люди</li>
             `;
 
-  /**
-   * Добавляем друзей, проходсь по массиву friends в данных выбранного человека
-   * el - 1 - индекс друга в исходном массиве данных
-   */
-  const friendsTitle = document.querySelector(".friends");
-  friends.forEach((el) => {
-    const clone = templateDetailsItem.content.cloneNode(true);
-    const nameField = clone.querySelector("span");
-    nameField.innerText = contactsData[el - 1].name;
-    fragment.appendChild(clone);
-  });
-  detailsList.insertBefore(fragment, friendsTitle.nextSibling);
+  renderFriends(friends);
+  renderNonFriends(nonFriends);
+  renderPopular(sortedByPopularity);
+};
 
-  /**
-   * Создаем массив недрузей, - проходим по исходному массиву и
-   * проверяем, что такого индекса нет в массиве friends выбранного человека,
-   * а также что это не собственный индекс выбранного человека - если так, добавляем в массив недрузей
-   * далее считаем количество повторений каждого человека в друзьях и записываем в объект popular
-   */
+/**
+ * Функция создает массив недрузей и объект для подсчета частотности нахождения в друзьях,
+ * проходим по исходному массиву и проверяем, что такого индекса нет в массиве friends выбранного человека,
+ * а также что это не собственный индекс выбранного человека - если так, добавляем в массив недрузей
+ *
+ * в этом же обходе исходного массива считаем количество повторений каждого человека в друзьях
+ * и записываем результаты подсчета в объект popular (ключ - id, значение - кол-во повторений)
+ *
+ * возвращает массивы недрузей и отсортированных популярных людей
+ */
+function getNonFriendsAndPopular(id, friends) {
   let nonFriends = [];
   let popular = {};
 
@@ -101,65 +100,97 @@ const renderDetails = function (id) {
     });
   });
 
+  const sortedByPopularity = sortPopular(popular);
+  return [nonFriends, sortedByPopularity];
+}
+
+/**
+ * Функция сортировки популярных людей, принимает объект (ключ - id, значение - кол-во повторений),
+ * возвращает массив отсортированных по популярности (и при необходимости - по имени) людей
+ */
+function sortPopular(obj) {
   /**
    * Сортируем людей по частотности нахождения в друзьях, затем проверяем,
    * нужно ли дополнительно сортировать по имени (если у 3 и 4 позиции одинаковая частотность, то нужно), -
    * вызываем функцию сортировки по имени и передаем туда массив всех людей с конкурирующей частотностью (arrToSortByName)
    */
-  const sortedByValueArr = Object.entries(popular).sort((a, b) => b[1] - a[1]);
+  const sortedByValueArr = Object.entries(obj).sort((a, b) => b[1] - a[1]);
   if (sortedByValueArr[2][1] === sortedByValueArr[3][1]) {
     let arrToSortByName = sortedByValueArr.filter(
       (item) => item[1] === sortedByValueArr[2][1]
     );
+    const sortedByName = sortByName(arrToSortByName);
 
     /**
-     * Получаем индекс, с которого начинаются элементы, которые будем сортировать по имени,
-     * а также все элементы с конкурирующим значением, отсортированные по алфавиту.
-     * Заменяем в массиве sortedByValueArr конкурирующие элементы на сортированные по алфавиту,
+     * Получаем индекс, с которого начинаются элементы, которые будем сортировать по имени.
+     * Заменяем в массиве sortedByValueArr конкурирующие элементы на отсортированные по алфавиту,
      * начиная с найденного ранее индекса
      */
     let indexToReplace = sortedByValueArr.findIndex(
       (item) => item[1] === sortedByValueArr[2][1]
     );
-    const sortedByName = sortByName(arrToSortByName);
     sortedByName.forEach((item) => {
       sortedByValueArr[indexToReplace] = item;
       indexToReplace++;
     });
   }
+  return sortedByValueArr;
+}
 
-  /**
-   * отрисовываем 3-х недрузей (первые 3 элемента массива недрузей)
-   * nonFriends[i] - 1 - индекс человека в исходном массиве данных (id, хранящееся в
-   * nonFriends - 1)
-   */
+/**
+ * функция рендера 3-х друзей, принимает массив друзей (по условию, их всегда три у любого человека)
+ * Добавляем друзей, проходсь по массиву friends в данных выбранного человека
+ *
+ * el - 1 - индекс друга в исходном массиве данных
+ */
+function renderFriends(arr) {
+  const friendsTitle = document.querySelector(".friends");
+  arr.forEach((el) => {
+    const clone = templateDetailsItem.content.cloneNode(true);
+    const nameField = clone.querySelector("span");
+    nameField.innerText = contactsData[el - 1].name;
+    fragment.appendChild(clone);
+  });
+  detailsList.insertBefore(fragment, friendsTitle.nextSibling);
+}
+
+/**
+ * функция рендера 3-х недрузей
+ * принимает массив недрузей и выводит на страницу первых трех
+ *
+ * (nonFriends[i] - 1) - индекс человека в исходном массиве данных
+ */
+function renderNonFriends(arr) {
   const nonFriendsTitle = document.querySelector(".not-in-friends");
   for (let i = 0; i < 3; i++) {
     const clone = templateDetailsItem.content.cloneNode(true);
     const nameField = clone.querySelector("span");
-    nameField.innerText = contactsData[nonFriends[i] - 1].name;
+    nameField.innerText = contactsData[arr[i] - 1].name;
     fragment.appendChild(clone);
   }
   detailsList.insertBefore(fragment, nonFriendsTitle.nextSibling);
+}
 
-  /**
-   * отрисовываем 3-х самых популярных людей
-   */
+/**
+ * функция рендера 3-х самых популярных людей
+ * принимает массив, отсортированный по популярности и алфавиту
+ */
+function renderPopular(arr) {
   const popularTitle = document.querySelector(".popular");
   for (let i = 0; i < 3; i++) {
     const clone = templateDetailsItem.content.cloneNode(true);
     const nameField = clone.querySelector("span");
-    nameField.innerText = contactsData[sortedByValueArr[i][0] - 1].name;
+    nameField.innerText = contactsData[arr[i][0] - 1].name;
     fragment.appendChild(clone);
   }
   detailsList.insertBefore(fragment, popularTitle.nextSibling);
-};
+}
 
 /**
  * Функция принимает массив всех людей с одинаковой частотностью
  *  вида ['id человека', частотность его нахождения в друзьях],
  * которых нужно отсортировать по имени
- * Возвращает массив того же вида, отсортированный по именам
+ * Возвращает новый массив того же вида, отсортированный по именам
  */
 function sortByName(arr) {
   return [...arr].sort((a, b) => {
@@ -180,13 +211,12 @@ const toggleDetails = function () {
 
 /**
  * Обработчик события click по контактам.
- * Запрашивает данные по картинке, на которую кликнули,
- * для открытия попапа с ней
+ * Открывает окно деталей контакта и передает
+ * в функцию рендера id для заполнения деталей
  */
 const contactHandler = function (evt) {
   evt.preventDefault();
   const currentContact = evt.target.closest("li");
-
   if (currentContact) {
     toggleDetails();
     renderDetails(currentContact.dataset.id);
