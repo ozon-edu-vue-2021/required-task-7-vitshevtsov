@@ -19,7 +19,7 @@ const getContacts = function () {
     .then((res) => res.json())
     .then((data) => {
       contactsData = data;
-      showContacts(data);
+      renderContacts(contactsData);
     });
 };
 
@@ -27,11 +27,10 @@ const getContacts = function () {
  * Функция копирует шаблон для каждого контакта,
  * заполняет его и встраивает в разметку
  */
-const showContacts = function (contacts) {
+const renderContacts = function (contacts) {
   if (!contacts.length) {
     throw Error(`Contacts list is empty.`);
   }
-  let idCounter = 1;
   contacts.forEach((el) => {
     const id = el.id;
     const name = el.name;
@@ -42,7 +41,6 @@ const showContacts = function (contacts) {
     item.dataset.id = id;
     nameField.innerText = name;
     fragment.appendChild(clone);
-    idCounter++;
   });
   contactsList.appendChild(fragment);
 };
@@ -86,10 +84,7 @@ function getNonFriendsAndPopular(id, friends) {
   let popular = {};
 
   contactsData.forEach((el) => {
-    if (
-      el.id !== +id &&
-      friends.find((friend) => friend === el.id) === undefined
-    ) {
+    if (el.id !== +id && !friends.find((friend) => friend === el.id)) {
       nonFriends.push(el.id);
     }
 
@@ -198,7 +193,7 @@ function sortByName(arr) {
     let nameB = contactsData[b[0] - 1].name.toLowerCase();
     if (nameA < nameB) return -1; //сортируем строки по возрастанию
     if (nameA > nameB) return 1;
-    return 0; // Никакой сортировки
+    return 0;
   });
 }
 
@@ -225,7 +220,7 @@ const contactHandler = function (evt) {
 
 /**
  * Обработчик события click по кнопке Назад.
- * скрывает страницу с деталями контакта
+ * скрывает страницу с деталями контакта и очищает разметку
  */
 const backButtonHandler = function (evt) {
   evt.preventDefault();
